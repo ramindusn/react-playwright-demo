@@ -8,8 +8,8 @@ export class CounterPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.incrementBtn = page.getByRole('button', { name: '+' });
-    this.decrementBtn = page.getByRole('button', { name: '-' });
+    this.incrementBtn = page.getByTestId('increment');
+    this.decrementBtn = page.getByTestId('decrement');
     this.count = page.getByTestId('count');
   }
 
