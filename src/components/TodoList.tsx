@@ -20,6 +20,7 @@ export function TodoList() {
       <h2>Todo List</h2>
       <div>
         <input
+          data-testid="todo-input"
           type="text"
           placeholder="Add a todo"
           aria-label="Todo input"
@@ -27,7 +28,7 @@ export function TodoList() {
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addTodo()}
         />
-        <button onClick={addTodo}>Add</button>
+        <button data-testid="add-todo" onClick={addTodo}>Add</button>
       </div>
       {todos.length === 0 ? (
         <p data-testid="empty-state">No todos yet.</p>
