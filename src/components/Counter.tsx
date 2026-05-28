@@ -6,9 +6,9 @@ export function Counter() {
   return (
     <section>
       <h2>Counter</h2>
-      <button onClick={() => setCount(c => c - 1)}>-</button>
+      <button data-testid="decrement" onClick={() => setCount(c => c - 1)}>-</button>
       <span data-testid="count" style={{ margin: '0 1rem' }}>{count}</span>
-      <button onClick={() => setCount(c => c + 1)}>+</button>
+      <button data-testid="increment" onClick={() => setCount(c => c + 1)}>+</button>
     </section>
   );
 }

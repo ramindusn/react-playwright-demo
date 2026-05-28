@@ -7,6 +7,7 @@ export function Greeting() {
     <section>
       <h2>Greeting</h2>
       <input
+        data-testid="name-input"
         type="text"
         placeholder="Enter your name"
         aria-label="Name"
