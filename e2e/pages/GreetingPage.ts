@@ -7,7 +7,7 @@ export class GreetingPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.nameInput = page.getByLabel('Name');
+    this.nameInput = page.getByTestId('name-input');
     this.greeting = page.getByTestId('greeting');
   }
 

@@ -9,8 +9,8 @@ export class TodoPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.todoInput = page.getByLabel('Todo input');
-    this.addBtn = page.getByRole('button', { name: 'Add' });
+    this.todoInput = page.getByTestId('todo-input');
+    this.addBtn = page.getByTestId('add-todo');
     this.todoList = page.getByTestId('todo-list');
     this.emptyState = page.getByTestId('empty-state');
   }
