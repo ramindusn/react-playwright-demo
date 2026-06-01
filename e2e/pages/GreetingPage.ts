@@ -1,18 +1,14 @@
 import { type Page, type Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class GreetingPage {
-  readonly page: Page;
+export class GreetingPage extends BasePage {
   readonly nameInput: Locator;
   readonly greeting: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.nameInput = page.getByTestId('name-input');
     this.greeting = page.getByTestId('greeting');
-  }
-
-  async goto() {
-    await this.page.goto('/');
   }
 
   async enterName(name: string) {
