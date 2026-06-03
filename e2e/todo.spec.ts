@@ -1,39 +1,31 @@
-import { test, expect } from '@playwright/test';
-import { TodoPage } from './pages/TodoPage';
+import { test, expect } from './fixtures';
 
 test.describe('Todo List', () => {
-  let todo: TodoPage;
-
-  test.beforeEach(async ({ page }) => {
-    todo = new TodoPage(page);
-    await todo.goto();
+  test('shows empty state initially', async ({ todoPage }) => {
+    await expect(todoPage.emptyState).toBeVisible();
   });
 
-  test('shows empty state initially', async () => {
-    await expect(todo.emptyState).toBeVisible();
+  test('adds a todo', async ({ todoPage }) => {
+    await todoPage.addTodo('Buy groceries');
+    await expect(todoPage.todoList).toContainText('Buy groceries');
+    await expect(todoPage.emptyState).not.toBeVisible();
   });
 
-  test('adds a todo', async () => {
-    await todo.addTodo('Buy groceries');
-    await expect(todo.todoList).toContainText('Buy groceries');
-    await expect(todo.emptyState).not.toBeVisible();
+  test('adds multiple todos', async ({ todoPage }) => {
+    await todoPage.addTodo('Task 1');
+    await todoPage.addTodo('Task 2');
+    await todoPage.addTodo('Task 3');
+    await expect(todoPage.todoList.locator('li')).toHaveCount(3);
   });
 
-  test('adds multiple todos', async () => {
-    await todo.addTodo('Task 1');
-    await todo.addTodo('Task 2');
-    await todo.addTodo('Task 3');
-    await expect(todo.todoList.locator('li')).toHaveCount(3);
+  test('removes a todo', async ({ todoPage }) => {
+    await todoPage.addTodo('Temporary task');
+    await todoPage.removeTodo('Temporary task');
+    await expect(todoPage.emptyState).toBeVisible();
   });
 
-  test('removes a todo', async () => {
-    await todo.addTodo('Temporary task');
-    await todo.removeTodo('Temporary task');
-    await expect(todo.emptyState).toBeVisible();
-  });
-
-  test('does not add empty todo', async () => {
-    await todo.addBtn.click();
-    await expect(todo.emptyState).toBeVisible();
+  test('does not add empty todo', async ({ todoPage }) => {
+    await todoPage.addBtn.click();
+    await expect(todoPage.emptyState).toBeVisible();
   });
 });
