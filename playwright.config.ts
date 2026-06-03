@@ -1,7 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-declare const process: { env: { CI?: string } };
-
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -11,7 +9,8 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:4173',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
   },
   projects: [
     {
