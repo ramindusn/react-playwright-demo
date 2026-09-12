@@ -2,7 +2,7 @@ import { test, expect } from './fixtures';
 
 test.describe('Greeting', () => {
   test('no greeting shown initially', async ({ greetingPage }) => {
-    await expect(greetingPage.greeting).not.toBeVisible();
+    await expect(greetingPage.greeting).toBeHidden();
   });
 
   test('shows greeting when name is entered', async ({ greetingPage }) => {
@@ -19,6 +19,6 @@ test.describe('Greeting', () => {
   test('hides greeting when name is cleared', async ({ greetingPage }) => {
     await greetingPage.enterName('Alice');
     await greetingPage.clearName();
-    await expect(greetingPage.greeting).not.toBeVisible();
+    await expect(greetingPage.greeting).toBeHidden();
   });
 });

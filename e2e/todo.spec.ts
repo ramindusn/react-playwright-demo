@@ -8,7 +8,7 @@ test.describe('Todo List', () => {
   test('adds a todo', async ({ todoPage }) => {
     await todoPage.addTodo('Buy groceries');
     await expect(todoPage.todoList).toContainText('Buy groceries');
-    await expect(todoPage.emptyState).not.toBeVisible();
+    await expect(todoPage.emptyState).toBeHidden();
   });
 
   test('adds multiple todos', async ({ todoPage }) => {

@@ -74,12 +74,12 @@ Key decisions:
 
 Tests run on 4 browser/device projects:
 
-| Project  | Device          |
-|----------|-----------------|
-| chromium | Desktop Chrome  |
-| webkit   | Desktop Safari  |
-| pixel    | Pixel 5         |
-| iphone   | iPhone 13       |
+| Project  | Device         |
+| -------- | -------------- |
+| chromium | Desktop Chrome |
+| webkit   | Desktop Safari |
+| pixel    | Pixel 5        |
+| iphone   | iPhone 13      |
 
 Traces and videos are retained on failure to make debugging easy.
 
