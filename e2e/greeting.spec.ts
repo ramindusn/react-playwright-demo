@@ -5,7 +5,7 @@ test.describe('Greeting', () => {
     await expect(greetingPage.greeting).toBeHidden();
   });
 
-  test('shows greeting when name is entered', async ({ greetingPage }) => {
+  test('shows greeting when name is entered', { tag: '@smoke' }, async ({ greetingPage }) => {
     await greetingPage.enterName('Alice');
     await expect(greetingPage.greeting).toHaveText('Hello, Alice!');
   });

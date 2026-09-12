@@ -5,7 +5,7 @@ test.describe('Counter', () => {
     await expect(counterPage.count).toHaveText('0');
   });
 
-  test('increments', async ({ counterPage }) => {
+  test('increments', { tag: '@smoke' }, async ({ counterPage }) => {
     await counterPage.increment();
     await counterPage.increment();
     await expect(counterPage.count).toHaveText('2');
