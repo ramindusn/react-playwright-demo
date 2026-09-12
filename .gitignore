@@ -1,6 +1,12 @@
 node_modules/
 dist/
 playwright-report/
+blob-report/
 test-results/
+playwright/.cache/
+coverage/
+.env*
 .DS_Store
 .idea/
+.claude/
+CLAUDE.md
