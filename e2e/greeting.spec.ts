@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { GreetingPage } from './pages/GreetingPage';
+import { failOnConsoleErrors } from './support/consoleErrors';
 
 test.describe('Greeting', () => {
+  failOnConsoleErrors();
+
   let greetingPage: GreetingPage;
 
   test.beforeEach(async ({ page }) => {

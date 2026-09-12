@@ -1,7 +1,10 @@
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect } from '@playwright/test';
+import { failOnConsoleErrors } from './support/consoleErrors';
 
 test.describe('Accessibility', () => {
+  failOnConsoleErrors();
+
   test('home page has no violations', { tag: '@smoke' }, async ({ page }) => {
     await page.goto('/');
 

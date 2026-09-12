@@ -75,6 +75,7 @@ src/
   tests/                # Vitest component unit tests
 e2e/
   pages/                # Page objects (BasePage + one per feature)
+  support/              # Shared test helpers (console error guard)
   *.spec.ts             # Playwright specs
 playwright.config.ts    # Projects, reporters, baseURL, retries
 eslint.config.js        # Shared rules, plus eslint-plugin-playwright for e2e/
@@ -113,8 +114,11 @@ navigates, so each test body contains only the behaviour it is checking:
 ```ts
 import { test, expect } from '@playwright/test';
 import { TodoPage } from './pages/TodoPage';
+import { failOnConsoleErrors } from './support/consoleErrors';
 
 test.describe('Todo List', () => {
+  failOnConsoleErrors();
+
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
@@ -139,6 +143,7 @@ test.describe('Todo List', () => {
 - **One page object per feature**, extending `BasePage` and declaring the route it owns.
 - **`data-testid` first**, `getByRole` where it reads naturally. If an element lacks a testid, add
   one rather than reaching for a fragile selector.
+- **Every describe block calls `failOnConsoleErrors()`** on its first line.
 - **Tag one test per feature `@smoke`** so the fast gate stays fast.
 - **Conventional Commits**, one logical change per commit.
 
@@ -161,6 +166,18 @@ Key decisions:
   custom fixtures can do the same job, but they put an indirection between the spec and its
   setup. A `beforeEach` is the pattern every test engineer already knows, and a newcomer can read
   a spec top to bottom without opening another file.
+- **Every test also asserts the app logged nothing.** `failOnConsoleErrors()` collects uncaught
+  exceptions and console errors, then fails the test if either happened. A DOM assertion cannot
+  see those, so without it a test can pass while the app is broken: the markup renders, but a
+  handler threw on the way there. One line per spec buys that on every run.
+
+  I verified it by breaking the app on purpose rather than trusting a green suite, and that
+  exposed a race. An error thrown asynchronously just after the last assertion was missed,
+  because the event had not reached the test process yet. The fix is in the `afterEach`: let the
+  browser complete one task turn before asserting, so an already-queued callback runs and its
+  error arrives. That costs about a millisecond, where a fixed sleep would have cost a hundred
+  on every test.
+
 - **`data-testid` locators.** Selectors stay stable when styling or copy changes.
 - **The test code is linted and type checked like production code.** `e2e/` is inside the
   TypeScript project, and `eslint-plugin-playwright` guards the mistakes that matter most, above

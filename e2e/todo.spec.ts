@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { TodoPage } from './pages/TodoPage';
+import { failOnConsoleErrors } from './support/consoleErrors';
 
 test.describe('Todo List', () => {
+  failOnConsoleErrors();
+
   let todoPage: TodoPage;
 
   test.beforeEach(async ({ page }) => {
