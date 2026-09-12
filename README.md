@@ -2,9 +2,9 @@
 
 [![CI](https://github.com/ramindusn/react-playwright-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ramindusn/react-playwright-demo/actions/workflows/ci.yml)
 
-A demo React application showcasing **Playwright E2E testing** with the Page Object Model and
-fixtures, **Vitest** unit tests, an **axe** accessibility check, **TypeScript**, and a
-**GitHub Actions** CI pipeline.
+A demo React application showcasing **Playwright E2E testing** with the Page Object Model,
+**Vitest** unit tests, an **axe** accessibility check, **TypeScript**, and a **GitHub Actions**
+CI pipeline.
 
 The framework is deliberately small. Every layer is something a new engineer can read in one
 sitting, and every addition below earns its place by removing work as the suite grows.
@@ -75,7 +75,6 @@ src/
   tests/                # Vitest component unit tests
 e2e/
   pages/                # Page objects (BasePage + one per feature)
-  fixtures.ts           # Custom fixtures that inject ready-to-use page objects
   *.spec.ts             # Playwright specs
 playwright.config.ts    # Projects, reporters, baseURL, retries
 eslint.config.js        # Shared rules, plus eslint-plugin-playwright for e2e/
@@ -84,7 +83,7 @@ eslint.config.js        # Shared rules, plus eslint-plugin-playwright for e2e/
 
 ## Adding a New Test
 
-Four steps, in this order. The point is that a spec is the last thing you write and the only
+Three steps, in this order. The point is that a spec is the last thing you write and the only
 thing a reviewer has to read.
 
 **1. Give the element a `data-testid`** in the component:
@@ -108,24 +107,35 @@ async clearTodos() {
 }
 ```
 
-**3. Expose it as a fixture** if the page object is new. Add it to the `Pages` type and the
-`test.extend` block in `e2e/fixtures.ts`, and it arrives in every spec already navigated.
-
-**4. Write the spec** so it reads as a user story:
+**3. Write the spec** so it reads as a user story. One `beforeEach` builds the page object and
+navigates, so each test body contains only the behaviour it is checking:
 
 ```ts
-test('clears every todo', async ({ todoPage }) => {
-  await todoPage.addTodo('Task 1');
-  await todoPage.addTodo('Task 2');
-  await todoPage.clearTodos();
-  await expect(todoPage.emptyState).toBeVisible();
+import { test, expect } from '@playwright/test';
+import { TodoPage } from './pages/TodoPage';
+
+test.describe('Todo List', () => {
+  let todoPage: TodoPage;
+
+  test.beforeEach(async ({ page }) => {
+    todoPage = new TodoPage(page);
+    await todoPage.goto();
+  });
+
+  test('clears every todo', async () => {
+    await todoPage.addTodo('Task 1');
+    await todoPage.addTodo('Task 2');
+    await todoPage.clearTodos();
+    await expect(todoPage.emptyState).toBeVisible();
+  });
 });
 ```
 
 ## Conventions
 
-- **Specs never touch `page` or a CSS selector.** If a spec needs a new locator, it belongs on a
-  page object. The only exception is the accessibility spec, which scans the whole document.
+- **Test bodies never touch `page` or a CSS selector.** A spec uses `page` only in its
+  `beforeEach`, to build the page object. If a test needs a new locator, it belongs on the page
+  object. The accessibility spec is the one exception, because it scans the whole document.
 - **One page object per feature**, extending `BasePage` and declaring the route it owns.
 - **`data-testid` first**, `getByRole` where it reads naturally. If an element lacks a testid, add
   one rather than reaching for a fragile selector.
@@ -138,7 +148,7 @@ I think of a test framework as **three layers**, with CI/CD wrapping around them
 
 1. **Test layer** — the specs and assertions. They read like a user story and stay free of
    selector and setup noise.
-2. **Logic layer** — page objects and fixtures. All interaction detail lives here.
+2. **Logic layer** — the page objects. All interaction detail lives here.
 3. **Config & reporting layer** — Playwright config, reporters, traces and videos, and the CI
    pipeline.
 
@@ -146,9 +156,11 @@ Key decisions:
 
 - **Page Object Model + `BasePage`.** Each feature has a page object that owns its locators and
   actions, and declares its own route. When the UI changes, I update one place, not every test.
-- **Custom fixtures for dependency injection.** Specs receive a ready-to-use page object
-  (`async ({ todoPage }) => ...`) instead of constructing one. Less boilerplate, and adding
-  setup later is a one-line change in the fixture rather than an edit to every test.
+- **A plain `beforeEach` for setup, not custom fixtures.** Each spec builds its page object and
+  navigates in one hook, so a test body is nothing but the behaviour under test. Playwright's
+  custom fixtures can do the same job, but they put an indirection between the spec and its
+  setup. A `beforeEach` is the pattern every test engineer already knows, and a newcomer can read
+  a spec top to bottom without opening another file.
 - **`data-testid` locators.** Selectors stay stable when styling or copy changes.
 - **The test code is linted and type checked like production code.** `e2e/` is inside the
   TypeScript project, and `eslint-plugin-playwright` guards the mistakes that matter most, above
