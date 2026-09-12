@@ -4,7 +4,7 @@ import { Greeting } from './components/Greeting';
 
 function App() {
   return (
-    <div style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
+    <main style={{ maxWidth: 600, margin: '2rem auto', fontFamily: 'sans-serif' }}>
       <h1>React Playwright Demo</h1>
       <hr />
       <Counter />
@@ -12,7 +12,7 @@ function App() {
       <Greeting />
       <hr />
       <TodoList />
-    </div>
+    </main>
   );
 }
 
