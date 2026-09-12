@@ -8,6 +8,12 @@ updates:
     groups:
       npm:
         patterns: ['*']
+    ignore:
+      # typescript-eslint peers on typescript <6.1, so TypeScript 7 cannot be
+      # installed alongside the linter. Remove this once typescript-eslint
+      # supports TypeScript 7. Tracked in JIRA-26.
+      - dependency-name: typescript
+        versions: ['>=7']
 
   - package-ecosystem: github-actions
     directory: /
